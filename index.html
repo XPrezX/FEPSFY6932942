@@ -207,76 +207,75 @@
     Verify Last Modified Time
 </button>
 <script>
-    async function getLastUpdatedTime() {
-        const username = 'nr0025';
-        const repo = 'FY0025';
-       
-        const url = `https://api.github.com/repos/${username}/${repo}/commits`;
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/vnd.github.v3+json',
-                }
-            });
-            if (!response.ok) {
-                throw new Error(`Error fetching data: ${response.status} - ${response.statusText}`);
-            }
-            const commits = await response.json();
-            if (commits && commits.length > 0) {
-                const lastCommitDate = new Date(commits[0].commit.committer.date);
-               
-                // Displaying the time on load
-                document.getElementById('last-updated').innerText = `Last Modified Time: ${lastCommitDate.toLocaleString()}`;
-            } else {
-                document.getElementById('last-updated').innerText = 'No commits found in the repository.';
-            }
-        } catch (error) {
-            console.error('Error fetching the last updated time:', error);
-            document.getElementById('last-updated').innerText = 'Error fetching update time. Please check the repository details.';
-        }
-    }
-    // Function to verify the last update time by re-fetching it from the API
-    async function verifyLastUpdatedTime() {
-        document.getElementById('last-updated').innerText = 'Verifying...';
-        await getLastUpdatedTime();
-        alert("Last modified time has been successfully verified from GitHub API.");
-    }
-    // Initial load to display the time on page load
-    window.onload = getLastUpdatedTime;
-</script>
+    <!-- WORD COUNT + GITHUB TIMESTAMP FIXED -->
 
-
- <!-- //////////////////////////////////////////////////////////////////////////////// -->
-  <!-- ////////////////////////////// Word count function ////////////////////////////// -->
-  <!-- //////////////////////////////////////////////////////////////////////////////// -->
-<!-- Placeholder for total word count -->
-<p id="totalWordCount"></p>
-<hr>
 <script>
-  // Function to calculate and display word count for a specified section
-  function displayWordCount(sectionId, outputId) {
-    // Get the text content from the specified section
-    const text = document.getElementById(sectionId).textContent;
-    // Split text into words based on spaces and filter out any empty strings
-    const wordArray = text.trim().split(/\s+/);
-    // Count the words
-    const wordCount = wordArray.length;
-    // Return the word count for summing purposes
-    return wordCount;
-  }
-  // Function to calculate and display total word count from selected sections
-  function displayTotalWordCount() {
-    // Calculate word count for each section and accumulate the total
-    const IntroductionCount = displayWordCount("Introduction_InText");
-    const AnalysisCount = displayWordCount("Analysis_InText");
-    // Calculate the sum of all selected sections
-    const totalWordCount = IntroductionCount + AnalysisCount;
-    // Display the total word count
-    document.getElementById("totalWordCount").innerText = `Total word count: ${totalWordCount}`;
-  }
-  // Run the function for specific sections and display total count when the page loads
-  window.onload = displayTotalWordCount;
+
+async function getLastUpdatedTime() {
+    const username = 'nr0025';
+    const repo = 'FY0025';
+
+    const url = `https://api.github.com/repos/${username}/${repo}/commits`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("GitHub API error");
+
+        const commits = await response.json();
+        if (commits.length > 0) {
+            const lastCommit = new Date(commits[0].commit.committer.date);
+            document.getElementById('last-updated').innerText =
+                `Last Modified Time: ${lastCommit.toLocaleString()}`;
+        } else {
+            document.getElementById('last-updated').innerText =
+                "No commits found.";
+        }
+
+    } catch (err) {
+        document.getElementById('last-updated').innerText =
+            "Error fetching update time.";
+    }
+}
+
+function verifyLastUpdatedTime() {
+    getLastUpdatedTime();
+    alert("Last modified time verified.");
+}
+
+/*------------------------------------------------------------
+  WORD COUNT FIX
+-------------------------------------------------------------*/
+
+// Add IDs to actual text sections you want counted
+// Example: <p id="intro-text"> ... </p>
+
+function countWordsInSection(id) {
+    const section = document.getElementById(id);
+    if (!section) return 0; // prevent crashes
+
+    const text = section.textContent.trim();
+    return text.split(/\s+/).length;
+}
+
+function displayTotalWordCount() {
+    // ADD the correct IDs from your document here ↓↓↓
+    const abstract = countWordsInSection("Abstract");
+    const intro = countWordsInSection("introduction");
+    const drs = countWordsInSection("How-Wings-Work");
+    const why = countWordsInSection("Why-DRS");
+    const discussion = countWordsInSection("discussion");
+    const conclusion = countWordsInSection("conclusion");
+
+    const total = abstract + intro + drs + why + discussion + conclusion;
+
+    document.getElementById("totalWordCount").innerText =
+        `Total word count: ${total}`;
+}
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    getLastUpdatedTime();
+    displayTotalWordCount();
+});
 </script>
-    </body>
-</html>
