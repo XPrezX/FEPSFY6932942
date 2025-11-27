@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Page</title>
-</head>
-<body>
 
 
 <script>   <!-- //////////////////////////////////////////////////////////////////////////////// -->
@@ -87,7 +81,5 @@
   // Run the function for specific sections and display total count when the page loads
   window.onload = displayTotalWordCount;
 </script>
-</script>
 
-</body>
-</html>
+
