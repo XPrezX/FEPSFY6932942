@@ -255,11 +255,13 @@
       }
 
       function displayWordCount(sectionId) {
-        const el = document.getElementById(sectionId);
-        if (!el) return 0;
-        const text = el.textContent;
-        const wordArray = text.trim().split(/\s+/);
-        return wordArray.length;
+    const el = document.querySelector("#" + CSS.escape(sectionId));
+    if (!el) return 0;
+    const text = el.textContent.trim();
+    if (!text) return 0;
+    return text.split(/\s+/).length;
+      }
+
       }
 
       function displayTotalWordCount() {
